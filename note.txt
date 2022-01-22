@@ -1,0 +1,23 @@
+[2-1 Database 개요]
+RDBMS: 관계형 data 관리하는 DBMS. SQL 사용 (e.g., MySQL, PostgreSQL). 표로만 사용
+NoSQL: JSON, Redis 같은 다양한 것을 사용해서 정보 정리 (e.g., Redis, MongoDB)
+
+[2-2 MongoDB Atlas 클라우드 구축]
+mongodb : https://www.mongodb.com/
+
+[2-3 MongoDB 접근 권한 설정 & Compass 셋업]
+mongodb+srv://jennie:<password>@nestcluster.q6ax6.mongodb.net/test
+
+[2-4 MongoDB CRUD]
+DB안에 collection 있음
+
+$ db : 현재 어떤 DB에 있는지 알려줌
+$ use <NAME> : DB 변경
+
+MongoDB가 자동으로 ObjectId 부여함
+
+CREATE : insertOne()
+READ : find()
+UPDATE : updateOne()
+DELETE : deleteOne()
+

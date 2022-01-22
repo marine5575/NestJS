@@ -1,0 +1,50 @@
+[1-1 express + ts 개발 환경 셋업 & hello world!]
+app: 서버 역할
+app.listen(): 서버 기동
+app.get(): 요청을 보냄
+res.send(): 응답을 보냄
+FE의 요청을 라우터를 통해 받음
+타입스크립트: JS 언어의 확장 언어. TS로 작성한 코드를 JS로 컴파일(트랜스파일링)하여 컴파일된 JS 코드가 Node.js(JS의 런타임 환경)에서 실행되면서 프로그램이 움직임
+
+[1-2 Postman 설치]
+postman: RESTful api같은 것을 테스트해볼 수 있는 앱 => 협업 시 good
+- 포스트맨 다운 :  https://www.postman.com/downloads/
+
+[1-3 고양이 데이터 모킹하기]
+데이터 모킹: 테스트를 위해 실제 data가 아닌 개발자가 필요에 의해 만든 data
+상업용 DB를 사용하는 것이 아닌 로컬 data 파일을 사용
+다른 entity를 연결할 때는 id로 연결
+
+ECMAScript 모듈 sys => 모듈을 비동기 방식으로 찾음
+CommonJS 모듈 sys => 모듈을 동기 방식으로 찾음
+
+[1-4 express 미들웨어 이해하기]
+미들웨어: 양쪽을 연결하여 data를 주고 받을 수 있도록 중간에서 연결 역할 하는 것
+FE가 요청한 것을 미들웨어가 받고
+-> 미들웨어가 해당 라우터에게 요청 전달
+-> 라우터가 DB에서 내용 찾아 비즈니스 로직 실행 후 응답 거꾸로 전달
+Express가 라우터를 찾으면 통신을 끊음 => 미들웨어 위치가 중요함
+Express는 직관적이고 유연함
+app.use(): 전체적으로 관리해주는 미들웨어
+app.get() 콜백함수에 인자로 next 인자 추가하면 특정 라우터에만 해당하는 미들웨어로 활용 가능
+
+[1-5 고양이 데이터 Create Read API 개발]
+CRUD: Create Read Update Delete
+상태코드(200: 응답 성공 / 400: 응답 실패 / 500: 서버 자체 오류)
+id는 session, 쿠키, JWT 같은 곳에 저장되어 있어서 FE가 BE에 보내주는 것
+express에서 JSON을 읽을 수 있도록 미들웨어를 추가해줘야 JSON 읽을 수 있음 => app.use(express.json());
+
+[1-6 고양이 route 분리, 모듈화]
+모듈화 시킬 때 app.js에 중간관리자 같은 router 하나를 추가해줘야 뿔뿔이 흩어진 라우터들 서버에 추가 가능
+
+[1-7 고양이 데이터 Update Delete API 개발]
+구조분해할당 2개 같이 사용하면 중복된 key 값을 가지는 것을 교체
+
+[1-8 express 싱글톤 패턴, 서비스 패턴]
+싱글톤 패턴: 객체의 instance가 딱 한개만 생성되게 하는 방법
+<- 최초의 한번의 new 연산자를 만들어서 추후 객체 접근할 때 메모리 낭비 방지 / 다른 클래스 간의 데이터 공유 쉬움
+서비스 패턴을 사용하면 라우터와 비즈니스 로직 분리해서 유지보수 good, 가독성 good, 확장성 good
+NestJS는 서비스 패턴을 사용함
+express에서 제공하는 미들웨어를 NestJS에서도 적용할 수 있음
+싱글톤 패턴이 항상 좋은 것은 x => SOLID 원칙에 위배될 수 있음! 아주 분명한 경우에 적용하자(e.g., 서버 실행처럼 딱 한 번 사용되는 것이 보증될 때)
+API(Application Programming Interface): 기능이 있는 프로그램에 접근이 쇱도록 하는 것. 프로그램들이 서로 상호작용하는 것을 도와주는 매개체 => https://www.redhat.com/ko/topics/api/what-are-application-programming-interfaces

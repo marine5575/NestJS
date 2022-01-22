@@ -1,0 +1,26 @@
+[0-1 강좌 소개]
+NestJS: TS를 지원하는 Node.js의 서버 app framework
+spring과 유사
+ODM? ORM?
+
+[0-2 Node, VSCode 설치 + Prettier 셋업]
+nodemon: 실시간으로 scipt 파일을 반영할 수 있는 것
+
+[0-3 웹 앱 아키텍쳐와 HTTP 프로토콜]
+유저가 브라우저에 url을 적으면 브라우저가 frontend(FE)에 요청을 보냄
+-> FE가 정보를 backend(BE)에 요청함
+-> BE가 DB에서 정보를 가져와서 민감한 데이터 제외하고 잘 정리해서 FE에 보내줌
+-> FE에서 UI에 맞춰 결과를 브라우저에 전해줌
+
+HTTP 프로토콜을 지키면서 정보 요청함 (규약)
+JSON을 이용해서 RESTful API를 만듦
+http 프로토콜 자료 1 : https://developer.mozilla.org/ko/docs/Web/HTTP
+http 프로토콜 자료 2 : https://developers.google.com/web/fundamentals/performance/http2
+JSON: png, html, xml, jpeg 와 같은 데이터 포맷
+
+[0-4 Restfull API에 대하여]
+JSON 형식 뿐만 아니라 HTML, CSS, 이미지 등의 리소스도 주고 받음
+get(리소스 가져오는거), post(리소스를 만드는거), put(리소스 업데이트), patch(리소스 부분 업데이트), delete(리소스 삭제)
+RESTful API 설계 시 "동사 쓰지 x  but 명사 쓰기!!"
+Rest API 공식 문서 : https://docs.microsoft.com/ko-kr/azure/architecture/best-practices/api-design
+JSON과 Javascript의 차이 : https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/JSON
