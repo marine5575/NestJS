@@ -21,3 +21,7 @@ READ : find()
 UPDATE : updateOne()
 DELETE : deleteOne()
 
+[2-6 MySQL CRUD]
+DB 안에 Table있고 Table 안에 field와 value가 있음
+Sql과 NoSql은 프로젝트 성격에 맞게 선택
+=> 데이터가 테이블 형식에 담기는 것이 유리한지, 도큐먼트 형식에 담기는 것이 프로젝트 데이터 구조에 유리한지를 고려하여 선택 (스키마가 자주 변하고, 비정형 빅데이터를 다루는 경우에는 일반적으로 MongoDB가 유리합니다.)
