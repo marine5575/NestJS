@@ -1,0 +1,10 @@
+[4-1 NestJS 개발 환경 셋팅 & hello world!]
+boiler-plate?
+controller.spec => 컨트롤러 테스트
+controller => express의 Route 파일 같은 역할
+router.get('/', ...) -> @Get('/') getHello();
+데코레이터(@): 함수나 클래스에 기능 첨가해줘서 재사용성 극대화
+@get() === @Get('/')
+데코레이터는 반드시 붙여써줘야 됨
+서비스에서 비즈니스 로직 적어둠
+
