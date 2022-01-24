@@ -8,3 +8,28 @@ router.get('/', ...) -> @Get('/') getHello();
 데코레이터는 반드시 붙여써줘야 됨
 서비스에서 비즈니스 로직 적어둠
 
+[4-2 (보충) NestJS를 위한 VSCode 셋업 및 ESLint, Prettier]
+eslint: JS와 TS의 코드를 검사해줌
+.eslintrc.js => eslint의 검사 규칙을 적어놓은 것
+production에서 console.log() 적는거 안 좋음
+코드 convention을 보통 prettier, eslint 같은 곳에 적어둠
+https://eslint.org/docs/rules/
+
+[4-3 NestJS 구조 & Controller 패턴]
+reflect-metadata: 데코레이터 문법 사용할 때 사용할 수 있는 패키지
+rxjs: 비동기, 이벤트 기반 프로그래밍할 때 필요한 패키지
+client가 req하면 controller가 받아서 res
+nestJS는 모듈 단위로 동작
+컨트롤러가 있는 endpt를 먼저 찾아가고 쭉 내려가면서 알맞은 endpt를 찾음
+get에서도 endpoint 작성 가능
+인자에도 데코레이터 패턴 사용해야됨
+nestJS에서는 body를 직접 인자로 받을 수 있음
+post 데코레이터 밑에 상태코드, 헤더 데코레이터 설정 가능
+Body의 경우는 타입을 dto로 설정 => dto 안에서 body에 대한 validation 평가 가능. 필수적인 req, 악의적인 요청 거르기 가능
+dto(Data Transfer Object)는 body에 대한 속성을 정의해줌
+
+[4-4 Providers & 의존성 주입 (DI)]
+DI(의존성 주입)
+controller: 소비자 / provider: 제품 제공 / 제품 사용
+공급자는 @Injection으로 의존성을 주입할 수 있음
+nestJS는 의존성을 명료하게 코드에 남겨서 확실하게 의존성 관리 가능
