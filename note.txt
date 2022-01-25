@@ -30,6 +30,36 @@ dto(Data Transfer Object)는 body에 대한 속성을 정의해줌
 
 [4-4 Providers & 의존성 주입 (DI)]
 DI(의존성 주입)
-controller: 소비자 / provider: 제품 제공 / 제품 사용
-공급자는 @Injection으로 의존성을 주입할 수 있음
+controller: 소비자 / (module에 있는 provider: 제품 제공) / 제품 사용
+공급자(app.service)는 @Injection으로 의존성을 주입할 수 있음
 nestJS는 의존성을 명료하게 코드에 남겨서 확실하게 의존성 관리 가능
+
+[4-5 Modules & 캡슐화]
+module 이름은 복수형으로 만들자
+import를 하면 각 모듈에서 export한 서비스들을 controller가 appservice에서 사용 가능함
+모듈은 기본적으로 캡슐화 함 => 개별 모듈에서 @module에 export 추가하면 외부에서도 사용 가능
+캡슐화: 객체의 속성과 메서드를 하나로 묶고, 구현된 일부를 감추어 은닉함
+
+[4-6 (보충) 캡슐화 추가 설명]
+@module에 controller, provider 있으면 provider를 해당 controller가 사용할 수 있게 함 (중계임)
+DI를 하려면 app.module의 provider에 있어야 함
+그렇지만 provider에 계속 다른 모듈의 service를 추가하는 것은 좋지 않음 <- 관리 힘듦
+=> 다른 모듈에서 접근할 수 있도록 export 해주는 것
+provider에는 해당 모듈에서 자체적으로 만든 공급자들을 넣는 것이 good
+
+[4-7 Nest Middleware]
+미들웨어는 @Injection을 사용하여 DI가 가능
+미들웨어는 @module에 들어가지 않고 그 밑에 있는 AppModule 클래스에 들어감 (NestModule 상속)
+logger: 요청하는 대상에 대해서 어떤 대상이 어떤 것을 요청했는지 적어두는 미들웨어
+.forRoutes('cats'): cats 라우터에 바인딩 시켜주는 것
+nestJS는 로깅을 할 때 logger라는 클래스를 사용
+
+[4-8 Exception filter & Pipes]
+nestJS에서는 HTTP 관련 에러는 HttpException으로 처리
+에러를 모아서 filter를 거쳐 내보내고 싶을 때 => exception.filter
+미들웨어 -> 컨트롤러 -> 서비스 -> exception
+pipe => 변환, 유효성 검사
+인자로 넘겨 받은 변수의 형을 바꿀 수 있음 (e.g., '123' -> 123)
+데코레이터에 filter를 설정하고 exception 발생했을 때 정보를 해당 filter에 넘김
+key와 value가 같으면 생략 가능
+nest 자체에서 처리해주는 error(e.g., 404)는 main.ts에 있는 app.useGlobalFilters 통해 수정 가능
