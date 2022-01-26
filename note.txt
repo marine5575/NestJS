@@ -63,3 +63,20 @@ pipe => 변환, 유효성 검사
 데코레이터에 filter를 설정하고 exception 발생했을 때 정보를 해당 filter에 넘김
 key와 value가 같으면 생략 가능
 nest 자체에서 처리해주는 error(e.g., 404)는 main.ts에 있는 app.useGlobalFilters 통해 수정 가능
+
+[4-9 (보충) Pipe 패턴에 대하여]
+https://docs.microsoft.com/en-us/azure/architecture/patterns/pipes-and-filters
+입력이 들어오면 함수가 하나 실행되어 유효성 검사/변환을 하고 그 값을 다음 함수에 넘겨줌. 끝까지 가서 결과를 냄
+=> pipe처럼 이어져있어서 pipe 패턴이라고 하는 것
+pipe는 단방향 통신을 위한 용도로 사용
+하나의 pipe는 이전 pipe에서 전달된 결과를 입력 값으로 받아 또 다른 결과 값을 내놓음
+NestJS에서의 pipe는 클라이언트 요청에서 들어오는 데이터를 유효성 검사 및 변환을 수행하여 서버가 원하는 데이터를 얻을 수 있도록 도와주는 역할
+"좋은 코드"에 대해 생각해본다면, 각각의 함수와 클래스는 하나의 기능을 수행하는 것이 좋음(단일 책임 원칙) & 각각의 함수와 클래스는 DI나 인자값으로 데이터를 주고 받는 것이 good
+
+[4-10 Interceptors & AOP 패턴]
+인터셉터: @Injectable() 가 달린 클래스
+AOP(관점 지향 프로그래밍): 모듈성을 증가시키는게 목적인 프로그래밍
+인터셉터 => 각각의 핵심 기능에서 횡단하면서 재사용 가능한 기능들을 하나의 모듈로 묶는 것
+인터셉터는 controller 전과 후 모두 사용 가능
+☆★요청 수명 주기: req -> 미들웨어 -> 가드 -> 인터셉터(pre-controller) -> pipe -> controller -> 서비스 -> 인터셉터 -> res
+미들웨어와는 실행 순서가 다름!
