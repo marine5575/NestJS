@@ -1,17 +1,30 @@
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, OpenAPIObject, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
-  await app.listen(8000);
-}
-bootstrap();
 
-/*
- * 1. middleware
- * 2. exception filter
- * 3. pipes
- * 4. nest-express vs nest-fastify
- */
+  const config = new DocumentBuilder()
+    .setTitle('Jennie Cat API')
+    .setDescription('cat')
+    .setVersion('1.0.0')
+    .build();
+  const document: OpenAPIObject = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('docs', app, document);
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+
+  const PORT = process.env.PORT;
+
+  await app.listen(PORT);
+}
+
+bootstrap();
