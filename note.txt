@@ -29,3 +29,38 @@ Repository 디자인패턴: service와 DB 사이에 중계자 역할을 하는 �
 서비스 layer에서 데이터의 출처와 상관 없이 동일한 방식으로 접근할 수 있도록 하는 것
 repo 패턴을 사용하면 비용적으로 안전
 schema는 entity와 같음!!
+
+[5-7 JWT와 로그인 서비스 & 순환 참조 모듈]
+session, cookie / JWT / token 이용해서 로그인 구현 가능
+JWT 쓰는 이유 => 모바일 백엔드도 지원하기 위해
+JWT(Json Web Token): Json 형식을 사용하여 사용자의 정보를 저장하는 웹 토큰
+JWT 형식 => <Header>.<Payload>.<Signature>
+
+Header: base64 인코딩 토큰의 타입과 알고리즘
+Payload: base64 인코딩 데이터 (key-value). 실제 사용자 정보 들어감. 꼭 필요한 정보만 넣기!!
+Signature: 헤더/payload를 조합하고 비밀키로 서명한 후 base64로 인코딩한 것
+
+로그인 과정 => {FE} 로그인 req -(email, pwd)-> {BE} 로그인 api -(secret key)-> JWT 발급
+JWT는 FE가 안전한 공간에 저장함 (local 저장소, http only 쿠키에 저장하는 경우 多)
+
+인증 과정 => {FE} 글쓰기 API req 보낼 때 헤더에 JWT를 실어 보냄 -> BE가 그걸 받아서 JWT guard를 통해서 JWT strategy를 실행 -> 비밀키를 가지고 디코딩 -> request.user에 저장 -> user의 정보를 읽어서 글쓰기 API 로직이 수행된 후에 반환
+
+AuthGuard()는 strategy를 자동으로 실행해주는 기능 있음
+JWT는 만료 기간이 있음
+모듈 자체를 import 해주면 모듈에서 export 해준 것을 다 사용할 수 있음
+순환모듈 참조는 forwardRef()로 감싸면 해결됨
+JwtModule()과 PassportStrategy의 secretOrKey는 일치해야 함 (인증할 때 만들었던 걸로 풀어야하니까!!)
+PassportStrategy는 인증할 때 사용, JwtModule()은 JWT를 만들어 줌
+
+[5-8 passport와 인증 전략 & Custom decorator]
+보안상의 이유로 user에는 암호 제외한 것들만 저장
+JWT를 사용할 경우 JWT를 삭제하면 FE에서 logout 처리된 것으로 인식
+
+[5-9 Swagger API 보안 설정 & 로그인 API 프론트엔드와 연결]
+swagger 문서는 반드시 보안 설정을 해줘야 함
+모듈에서 환경변수를 사용하려면 import에서 configModule 넣어줘야 함
+
+[5-10 Multer와 미디어 파일 서비스 (mp3, mp4, img 등)]
+multipart/form-data: HTTP Post 요청을 통해서 바이너리 파일을 보낼 때 이런 형식으로 보냄
+app.useStaticAssets() => app을 NestExpressApplication 형식임을 제네릭을 통해 명시
+DB에는 이미지의 주소를 저장
