@@ -1,0 +1,85 @@
+[5-2 NestJS와 DB 연결하기, 환경 변수 설정]
+.env를 사용하려면 process.env 사용하면 됨
+모듈 안에서 환경변수를 사용하기 위해서는 import해줘야 사용할 수 있음
+
+[5-3 DB 스키마, Controller 설계 & validation]
+스키마에서 class validation 필요 => class-validator 라이브러리!
+
+[5-4 회원가입 서비스 개발 & DTO 패턴]
+class validation 사용하려면 main에 app.useGlobalPipes()에 설정해줘야 작동함
+DTO: 계층간 데이터 교환을 위한 객체. validation, typing 검사도 함
+DTO에 class 사용하는 이유는 데코레이터 사용 & 상속을 통한 재사용성 증가
+스키마를 서비스 안에 넣기 위해서는 DI 해줘야 됨 & 모듈에 스키마를 import 해줘야 됨
+UnauthorizedException => 403 에러 반환
+promise를 반환하면 await 해줘야 됨
+mongoose는 virtual 필드 제공 => 실제로 db에 저장되는 필드는 아니지만 비즈니스 로직에서 사용할 수 있도록 제공해주는 필드
+
+[5-5 NestJS와 fastify & 협업을 위한 API 문서 만들기, CORS 문제]
+fastify는 express와 비슷한 framework
+속도를 높일 필요가 있는 api는 fastify로 리팩토링하는게 good
+@ApiOperation을 사용하면 api 문서에 설명 붙일 수 있음
+@ApiProperty를 설정하면 api body 예제 붙일 수 있음
+PickType을 사용하면 class에서 필요한 부분만 가져올 수 있음
+OmitType을 사용하면 class에서 필요없는 부분만 빼고 가갈 수 있음
+CORS error => 서비스 하고 있지 않은 사이트에서 의도치 않는 접근 방지
+
+[5-6 Repository 패턴과 레이어 분리]
+Repository 디자인패턴: service와 DB 사이에 중계자 역할을 하는 것
+=> DB 접근하는 로직을 rep에 모아두면 service는 비즈니스 로직에 더 집중하고, 책임 분리 명확해짐
+서비스 layer에서 데이터의 출처와 상관 없이 동일한 방식으로 접근할 수 있도록 하는 것
+repo 패턴을 사용하면 비용적으로 안전
+schema는 entity와 같음!!
+
+[5-7 JWT와 로그인 서비스 & 순환 참조 모듈]
+session, cookie / JWT / token 이용해서 로그인 구현 가능
+JWT 쓰는 이유 => 모바일 백엔드도 지원하기 위해
+JWT(Json Web Token): Json 형식을 사용하여 사용자의 정보를 저장하는 웹 토큰
+JWT 형식 => <Header>.<Payload>.<Signature>
+
+Header: base64 인코딩 토큰의 타입과 알고리즘
+Payload: base64 인코딩 데이터 (key-value). 실제 사용자 정보 들어감. 꼭 필요한 정보만 넣기!!
+Signature: 헤더/payload를 조합하고 비밀키로 서명한 후 base64로 인코딩한 것
+
+로그인 과정 => {FE} 로그인 req -(email, pwd)-> {BE} 로그인 api -(secret key)-> JWT 발급
+JWT는 FE가 안전한 공간에 저장함 (local 저장소, http only 쿠키에 저장하는 경우 多)
+
+인증 과정 => {FE} 글쓰기 API req 보낼 때 헤더에 JWT를 실어 보냄 -> BE가 그걸 받아서 JWT guard를 통해서 JWT strategy를 실행 -> 비밀키를 가지고 디코딩 -> request.user에 저장 -> user의 정보를 읽어서 글쓰기 API 로직이 수행된 후에 반환
+
+AuthGuard()는 strategy를 자동으로 실행해주는 기능 있음
+JWT는 만료 기간이 있음
+모듈 자체를 import 해주면 모듈에서 export 해준 것을 다 사용할 수 있음
+순환모듈 참조는 forwardRef()로 감싸면 해결됨
+JwtModule()과 PassportStrategy의 secretOrKey는 일치해야 함 (인증할 때 만들었던 걸로 풀어야하니까!!)
+PassportStrategy는 인증할 때 사용, JwtModule()은 JWT를 만들어 줌
+
+[5-8 passport와 인증 전략 & Custom decorator]
+보안상의 이유로 user에는 암호 제외한 것들만 저장
+JWT를 사용할 경우 JWT를 삭제하면 FE에서 logout 처리된 것으로 인식
+
+[5-9 Swagger API 보안 설정 & 로그인 API 프론트엔드와 연결]
+swagger 문서는 반드시 보안 설정을 해줘야 함
+모듈에서 환경변수를 사용하려면 import에서 configModule 넣어줘야 함
+
+[5-10 Multer와 미디어 파일 서비스 (mp3, mp4, img 등)]
+multipart/form-data: HTTP Post 요청을 통해서 바이너리 파일을 보낼 때 이런 형식으로 보냄
+app.useStaticAssets() => app을 NestExpressApplication 형식임을 제네릭을 통해 명시
+DB에는 이미지의 주소를 저장
+
+[5-13 고양이끼리 소통 API (댓글, 좋아요) - DB 설계, 컨트롤러 정의]
+id는 Types.ObjectId라는 타입!  but 몽구스가 string으로 변환해주는 것
+dto는 이름을 확실하게 짓는게 good <- 서비스가 커지면 많아지기 때문
+DB와 소통하려면 비동기 로직이 포함될 수 밖에 없기 때문에 async를 계속 붙이는 것
+
+[5-14 고양이끼리 소통 API (댓글, 좋아요) - 서비스 완성]
+mongoDB는 id를 string, Type.ObjectId 둘 중 아무거나 와도 ok <- 몽구스가 알아서 변환해줌
+body에 적은 id는 변조 가능성이 있기 때문에 한번 확인함
+마지막에 .save() 해주면 변경한 것을 적용할 수 있음
+ref에 들어가는 건 스키마 이름
+스키마에서 collection 이름 설정하지 않으면 스키마 class 이름 그대로 생성됨
+populate => 다른 document와 연결해줄 수 있는 메서드. 사용할 때 2가지 옵션 필요(toObject, toJSON)
+
+해당하는 스키마에서 virtual 필드 하나 만듦
+-> 모듈에서 해당하는 collection 사용한다고 등록
+-> 레포에서 스키마 연결하고 populate 사용(이 때 virtual에서 썼던 스키마 이름 그대로)
+
+virtual 필드를 사용하면 다른 document와 연결할 수 있음!!

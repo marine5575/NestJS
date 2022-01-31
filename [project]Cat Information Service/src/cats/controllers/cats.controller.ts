@@ -1,4 +1,3 @@
-import { multerOptions } from './../../common/utils/multer.options';
 import { LoginRequestDto } from './../../auth/dto/login.request.dto';
 import { CatRequestDto } from './../dto/cats.request.dto';
 import { ReadOnlyCatDto } from './../dto/cats.dto';
@@ -15,13 +14,14 @@ import {
   Controller,
   Get,
   Post,
-  UploadedFiles,
+  UploadedFile,
   UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { FilesInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { AwsService } from '../services/aws.service';
 
 @Controller('cats')
 @UseInterceptors(SuccessInterceptor)
@@ -30,6 +30,7 @@ export class CatsController {
   constructor(
     private readonly catsService: CatsService,
     private readonly authService: AuthService,
+    private readonly awsService: AwsService,
   ) {}
 
   @ApiOperation({ summary: '현재 고양이 가져오기' })
@@ -66,17 +67,40 @@ export class CatsController {
   //   return 'logout';
   // }
 
+  // /* 로컬 업로드 */
+  // @ApiOperation({ summary: '고양이 이미지 업로드' })
+  // @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
+  // @UseGuards(JwtAuthGuard)
+  // @Post('upload')
+  // uploadCatImg(
+  //   @UploadedFiles() files: Array<Express.Multer.File>,
+  //   @CurrentUser() cat: Cat,
+  // ) {
+  //   console.log(files);
+
+  //   // return { image: `http://localhost:8000/media/cats/${files[0].filename}` };
+  //   return this.catsService.uploadImg(cat, files);
+  // }
+
+  /* AWS 업로드 */
   @ApiOperation({ summary: '고양이 이미지 업로드' })
-  @UseInterceptors(FilesInterceptor('image', 10, multerOptions('cats')))
+  @UseInterceptors(FileInterceptor('image'))
   @UseGuards(JwtAuthGuard)
   @Post('upload')
-  uploadCatImg(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+  async uploadCatImg(
+    @UploadedFile() file: Express.Multer.File,
     @CurrentUser() cat: Cat,
   ) {
-    console.log(files);
+    console.log(file);
 
-    // return { image: `http://localhost:8000/media/cats/${files[0].filename}` };
-    return this.catsService.uploadImg(cat, files);
+    const result = await this.awsService.uploadFileToS3('cats', file);
+
+    return this.catsService.uploadImg(cat, result.key);
+  }
+
+  @ApiOperation({ summary: '모든 고양이 가져오기' })
+  @Get('all')
+  getAllCat() {
+    return this.catsService.getAllCat();
   }
 }
