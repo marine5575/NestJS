@@ -6,5 +6,29 @@ CSR => 서버에서 JS, CSS만 받아옴. 브라우저가 JS를 html로 렌더�
 사용자 interaction이 많고 JS로 무엇인가를 많이 하려고 하면 CSR이 good
 but CSR는 불안정함 (렌더링 속도가 느리면 빈 화면만 보게 됨)
 한꺼번에 렌더링된 것을 볼 수 있으니까 SSR을 사용하는게 good
+SSR => e.g., MDN
+
+
+[7-3 MVC 패턴, 프로젝트 셋업]
+MVC 패턴: SW 디자인패턴. 책임을 분리해서 나눈 패턴. "관심사의 분리". 하나의 SW 프로그램을 각각의 영역으로 분리한 것
+
+모델: mongo DB, mongoose
+뷰: HTML 파일, CSS, JS
+컨트롤러: 사용자가 url로 들어왔을 때 어떤 걸 보여줄지 결정
+
+템플릿엔진: HTML을 랜더링할 수 있는 엔진 (e.g., HVS)
+useStaticAssets: JS, CSS 파일을 서빙
+setBaseViewsDir: 템플릿 엔진 파일을 어디에 둘 것인지
+HBS => HTML 파일에서 변수를 받을 수 있음
+
+
+[7-4 HTTP vs Socket]
+HTTP 연결 방식: 단방향 (req -> res). client가 req를 보내야 서버가 res를 보내줌
+polling 방식: 단방향 연결이지만 계속해서 여러번 보내서 양방향 연결처럼 만듦
+Socket 연결 방식: 양방향 
+소켓은 like 콘센트
+Gateway: dep injection 가능. injectable한 클래스
+☆ emit => 보낸다 / on => 받는다 ☆
+소켓 사용하려면 Socket.io라는 cdn 서비스 필요
 
 
